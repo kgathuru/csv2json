@@ -7,8 +7,9 @@ module CSV2JSON
 
     # convert an input string value to integer or float if applicable
     def convert(val)
-        return Integer(val) if val.to_i.to_s == val
-        Float(val) rescue val
+        return String(val)
+        # return Integer(val) if val.to_i.to_s == val
+        # Float(val) rescue val
     end
 
     # input and output are file objects, you can use StringIO if you want to work in memory
@@ -32,11 +33,14 @@ module CSV2JSON
             headers.each_index { |i| snippet[headers[i]] = self.convert(row[i]) }
             result << snippet
         end
+
+        final = Hash.new
+        final["docs"] = result
         
         if gemOptions[:pretty] == true then
-            output << JSON.pretty_generate(result)
+            output << JSON.pretty_generate(final)
         else
-            output << JSON.generate(result)
+            output << JSON.generate(final)
         end
 
     end
